@@ -1,18 +1,22 @@
 const Sequelize = require("sequelize");
+const ReaderModel = require("./reader");
 
 const { DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT } = process.env;
 
-const setUpDatabase = () => {
+const setupDatabase = () => {
   const connection = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
+    port: DB_PORT,
     dialect: "mysql",
-    PORT: DB_PORT,
     logging: false,
   });
 
-  connection.sync({ alter: true });
+  const Reader = ReaderModel(connection, Sequelize);
 
-  return {};
+  connection.sync({ alter: true });
+  return {
+    Reader,
+  };
 };
 
-module.exports = setUpDatabase();
+module.exports = setupDatabase();
