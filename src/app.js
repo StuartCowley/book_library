@@ -1,5 +1,11 @@
 const express = require("express");
-const { CreateReader } = require("../src/controllers/reader");
+const {
+  CreateReader,
+  GetReaders,
+  GetReaderById,
+  UpdateReader,
+  DeleteReader,
+} = require("../src/controllers/reader");
 
 const app = express();
 
@@ -10,5 +16,13 @@ app.get("/", (req, res) => {
 });
 
 app.post("/readers", CreateReader);
+
+app.get("/reader", GetReaders);
+
+app.get("/reader/:id", GetReaderById);
+
+app.patch("/reader/:id", UpdateReader);
+
+app.delete("/reader/:id", DeleteReader);
 
 module.exports = app;
