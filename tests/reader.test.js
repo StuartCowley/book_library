@@ -14,9 +14,10 @@ describe("/readers", () => {
   describe("with no records in the database", () => {
     describe("POST /readers", () => {
       it("creates a new reader in the database", async () => {
-        const response = await request(app).post("/readers").send({
+        const response = await request(app).post("/reader").send({
           name: "Elizabeth Bennet",
           email: "future_ms_darcy@gmail.com",
+          password: "123456789",
         });
         const newReaderRecord = await Reader.findByPk(response.body.id, {
           raw: true,
@@ -26,6 +27,7 @@ describe("/readers", () => {
         expect(response.body.name).to.equal("Elizabeth Bennet");
         expect(newReaderRecord.name).to.equal("Elizabeth Bennet");
         expect(newReaderRecord.email).to.equal("future_ms_darcy@gmail.com");
+        expect(newReaderRecord.password).to.equal("123456789");
       });
     });
   });
@@ -38,9 +40,18 @@ describe("/readers", () => {
         Reader.create({
           name: "Elizabeth Bennet",
           email: "future_ms_darcy@gmail.com",
+          password: "123456789",
         }),
-        Reader.create({ name: "Arya Stark", email: "vmorgul@me.com" }),
-        Reader.create({ name: "Lyra Belacqua", email: "darknorth123@msn.org" }),
+        Reader.create({
+          name: "Arya Stark",
+          email: "vmorgul@me.com",
+          password: "123456789",
+        }),
+        Reader.create({
+          name: "Lyra Belacqua",
+          email: "darknorth123@msn.org",
+          password: "123456789",
+        }),
       ]);
     });
 
