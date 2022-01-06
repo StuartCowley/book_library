@@ -14,7 +14,7 @@ describe("/readers", () => {
   describe("with no records in the database", () => {
     describe("POST /readers", () => {
       it("creates a new reader in the database", async () => {
-        const response = await request(app).post("/reader").send({
+        const response = await request(app).post("/readers").send({
           name: "Elizabeth Bennet",
           email: "future_ms_darcy@gmail.com",
           password: "123456789",
@@ -28,6 +28,46 @@ describe("/readers", () => {
         expect(newReaderRecord.name).to.equal("Elizabeth Bennet");
         expect(newReaderRecord.email).to.equal("future_ms_darcy@gmail.com");
         expect(newReaderRecord.password).to.equal("123456789");
+      });
+
+      it("Should return a 500 if name is empty", async () => {
+        const readerData = {
+          name: "",
+          email: "hello@hello.com",
+          password: "12345567890abc",
+        };
+
+        const result = await request(app).post("/readers").send(readerData);
+        expect(result.status).to.equal(500);
+        expect(result.body.error).to.equal(
+          "Validation error: Name can not be empty"
+        );
+      });
+
+      it("Should return a 500 if email is in an incorrect format", async () => {
+        const readerData = {
+          name: "Bob Smith",
+          email: "helloathello.com",
+          password: "12345567890abc",
+        };
+        const result = await request(app).post("/readers").send(readerData);
+        expect(result.status).to.equal(500);
+        expect(result.body.error).to.equal(
+          "Validation error: Email must be in correct format"
+        );
+      });
+
+      it("Should return a 500 if password is less than 8 characters long", async () => {
+        const readerData = {
+          name: "Bob Smith",
+          email: "hello@hello.com",
+          password: "12",
+        };
+        const result = await request(app).post("/readers").send(readerData);
+        expect(result.status).to.equal(500);
+        expect(result.body.error).to.equal(
+          "Validation error: Password must be 8 characters or longer!"
+        );
       });
     });
   });
@@ -57,7 +97,7 @@ describe("/readers", () => {
 
     describe("GET /readers", () => {
       it("gets all readers records", async () => {
-        const response = await request(app).get("/reader");
+        const response = await request(app).get("/readers");
 
         expect(response.status).to.equal(200);
         expect(response.body.length).to.equal(3);
@@ -74,7 +114,7 @@ describe("/readers", () => {
     describe("GET /readers/:id", () => {
       it("gets readers record by id", async () => {
         const reader = readers[0];
-        const response = await request(app).get(`/reader/${reader.id}`);
+        const response = await request(app).get(`/readers/${reader.id}`);
 
         expect(response.status).to.equal(200);
         expect(response.body.name).to.equal(reader.name);
@@ -82,7 +122,7 @@ describe("/readers", () => {
       });
 
       it("returns a 404 if the reader does not exist", async () => {
-        const response = await request(app).get("/reader/12345");
+        const response = await request(app).get("/readers/12345");
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal("The reader could not be found.");
@@ -93,7 +133,7 @@ describe("/readers", () => {
       it("updates readers email by id", async () => {
         const reader = readers[0];
         const response = await request(app)
-          .patch(`/reader/${reader.id}`)
+          .patch(`/readers/${reader.id}`)
           .send({ email: "miss_e_bennet@gmail.com" });
         const updatedReaderRecord = await Reader.findByPk(reader.id, {
           raw: true,
@@ -105,7 +145,7 @@ describe("/readers", () => {
 
       it("returns a 404 if the reader does not exist", async () => {
         const response = await request(app)
-          .patch("/reader/12345")
+          .patch("/readers/12345")
           .send({ email: "some_new_email@gmail.com" });
 
         expect(response.status).to.equal(404);
@@ -116,7 +156,7 @@ describe("/readers", () => {
     describe("DELETE /readers/:id", () => {
       it("deletes reader record by id", async () => {
         const reader = readers[0];
-        const response = await request(app).delete(`/reader/${reader.id}`);
+        const response = await request(app).delete(`/readers/${reader.id}`);
         const deletedReader = await Reader.findByPk(reader.id, { raw: true });
 
         expect(response.status).to.equal(204);
@@ -124,7 +164,7 @@ describe("/readers", () => {
       });
 
       it("returns a 404 if the reader does not exist", async () => {
-        const response = await request(app).delete("/reader/12345");
+        const response = await request(app).delete("/readers/12345");
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal("The reader could not be found.");
       });

@@ -6,7 +6,8 @@ const CreateReader = (req, res) => {
       return res.status(201).json(reader);
     })
     .catch((err) => {
-      res.status(404).send(err);
+      const message = err.message;
+      res.status(500).json({ error: message });
     });
 };
 
