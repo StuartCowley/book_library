@@ -20,4 +20,46 @@ const GetBooks = (req, res) => {
     });
 };
 
-module.exports = { CreateBook, GetBooks };
+const GetBookById = (req, res) => {
+  Book.findByPk(req.params.id)
+    .then((book) => {
+      if (book) {
+        res.status(200).json(book);
+      } else {
+        res.status(404).json({ error: "The book could not be found." });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+};
+
+const UpdateBook = (req, res) => {
+  Book.update(req.body, { where: { id: req.params.id } })
+    .then(([book]) => {
+      if (book) {
+        res.status(200).json(book);
+      } else {
+        res.status(404).json({ error: "The book could not be found." });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+};
+
+const DeleteBook = (req, res) => {
+  Book.destroy({ where: { id: req.params.id } })
+    .then((book) => {
+      if (book) {
+        res.status(204).send("Deleted");
+      } else {
+        res.status(404).json({ error: "The book could not be found." });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+};
+
+module.exports = { CreateBook, GetBooks, GetBookById, UpdateBook, DeleteBook };
