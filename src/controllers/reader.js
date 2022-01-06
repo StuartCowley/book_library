@@ -1,66 +1,30 @@
 const { Reader } = require("../models");
+const {
+  createItem,
+  getAll,
+  getById,
+  updateItem,
+  deleteItem,
+} = require("./helper");
 
 const CreateReader = (req, res) => {
-  Reader.create(req.body)
-    .then((reader) => {
-      return res.status(201).json(reader);
-    })
-    .catch((err) => {
-      const message = err.message;
-      res.status(500).json({ error: message });
-    });
+  createItem(Reader, req.body, res);
 };
 
 const GetReaders = (req, res) => {
-  Reader.findAll()
-    .then((readers) => {
-      return res.status(200).json(readers);
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
+  getAll(Reader, res);
 };
 
 const GetReaderById = (req, res) => {
-  Reader.findByPk(req.params.id)
-    .then((reader) => {
-      if (reader) {
-        res.status(200).json(reader);
-      } else {
-        res.status(404).json({ error: "The reader could not be found." });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
+  getById(Reader, res, req.params.id);
 };
 
 const UpdateReader = (req, res) => {
-  Reader.update(req.body, { where: { id: req.params.id } })
-    .then(([reader]) => {
-      if (reader) {
-        res.status(200).json(reader);
-      } else {
-        res.status(404).json({ error: "The reader could not be found." });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
+  updateItem(Reader, res, req.params.id, req.body);
 };
 
 const DeleteReader = (req, res) => {
-  Reader.destroy({ where: { id: req.params.id } })
-    .then((reader) => {
-      if (reader) {
-        res.status(204).send("deleted");
-      } else {
-        res.status(404).json({ error: "The reader could not be found." });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
+  deleteItem(Reader, res, req.params.id);
 };
 
 module.exports = {
