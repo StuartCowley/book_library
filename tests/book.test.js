@@ -28,6 +28,63 @@ describe("/books", () => {
         expect(newBookRecord.title).to.equal(bookData.title);
         expect(newBookRecord.author).to.equal(bookData.author);
       });
+
+      it("Should return 500 if title is empty", async () => {
+        const bookData = {
+          title: "",
+          author: "Bob",
+          genre: "Horror",
+          ISBN: "89079707700970cvej",
+        };
+
+        const result = await request(app).post("/books").send(bookData);
+        expect(result.status).to.equal(500);
+        expect(result.body.error).to.equal(
+          "Validation error: Title can not be empty"
+        );
+      });
+
+      it("Should return 500 if title is null", async () => {
+        const bookData = {
+          author: "Bob",
+          genre: "Horror",
+          ISBN: "89079707700970cvej",
+        };
+
+        const result = await request(app).post("/books").send(bookData);
+        expect(result.status).to.equal(500);
+        expect(result.body.error).to.equal(
+          "notNull Violation: Title can not be empty"
+        );
+      });
+      it("Should return 500 if author is empty", async () => {
+        const bookData = {
+          title: "A new book",
+          author: "",
+          genre: "Horror",
+          ISBN: "89079707700970cvej",
+        };
+
+        const result = await request(app).post("/books").send(bookData);
+        expect(result.status).to.equal(500);
+        expect(result.body.error).to.equal(
+          "Validation error: Author can not be empty"
+        );
+      });
+
+      it("Should return 500 if author is null", async () => {
+        const bookData = {
+          title: "A new book",
+          genre: "Horror",
+          ISBN: "89079707700970cvej",
+        };
+
+        const result = await request(app).post("/books").send(bookData);
+        expect(result.status).to.equal(500);
+        expect(result.body.error).to.equal(
+          "notNull Violation: Author can not be empty"
+        );
+      });
     });
     describe("with records in the database", () => {
       let books;

@@ -43,6 +43,18 @@ describe("/readers", () => {
           "Validation error: Name can not be empty"
         );
       });
+      it("Should return a 500 if name is null", async () => {
+        const readerData = {
+          email: "hello@hello.com",
+          password: "12345567890abc",
+        };
+
+        const result = await request(app).post("/readers").send(readerData);
+        expect(result.status).to.equal(500);
+        expect(result.body.error).to.equal(
+          "notNull Violation: Name can not be empty"
+        );
+      });
 
       it("Should return a 500 if email is in an incorrect format", async () => {
         const readerData = {
@@ -56,6 +68,17 @@ describe("/readers", () => {
           "Validation error: Email must be in correct format"
         );
       });
+      it("Should return a 500 if email is null", async () => {
+        const readerData = {
+          name: "Bob Smith",
+          password: "12345567890abc",
+        };
+        const result = await request(app).post("/readers").send(readerData);
+        expect(result.status).to.equal(500);
+        expect(result.body.error).to.equal(
+          "notNull Violation: Email can not be empty"
+        );
+      });
 
       it("Should return a 500 if password is less than 8 characters long", async () => {
         const readerData = {
@@ -67,6 +90,17 @@ describe("/readers", () => {
         expect(result.status).to.equal(500);
         expect(result.body.error).to.equal(
           "Validation error: Password must be 8 characters or longer!"
+        );
+      });
+      it("Should return a 500 if password is null", async () => {
+        const readerData = {
+          name: "Bob Smith",
+          email: "hello@hello.com",
+        };
+        const result = await request(app).post("/readers").send(readerData);
+        expect(result.status).to.equal(500);
+        expect(result.body.error).to.equal(
+          "notNull Violation: Password must be 8 characters or longer!"
         );
       });
     });

@@ -8,6 +8,9 @@ module.exports = (connection, DataTypes) => {
           args: [true],
           msg: "Name can not be empty",
         },
+        notNull: {
+          msg: "Name can not be empty",
+        },
       },
     },
     email: {
@@ -18,7 +21,13 @@ module.exports = (connection, DataTypes) => {
           args: [true],
           msg: "Email must be in correct format",
         },
-        notEmpty: true,
+        notEmpty: {
+          args: [true],
+          msg: "Email can not be empty",
+        },
+        notNull: {
+          msg: "Email can not be empty",
+        },
       },
     },
     password: {
@@ -29,7 +38,9 @@ module.exports = (connection, DataTypes) => {
           args: [8],
           msg: "Password must be 8 characters or longer!",
         },
-        notEmpty: true,
+        notNull: {
+          msg: "Password must be 8 characters or longer!",
+        },
       },
     },
   };
