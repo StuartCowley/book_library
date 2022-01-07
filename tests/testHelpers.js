@@ -13,4 +13,13 @@ for (let i = 0; i < 3; i++) {
   arrayOfBooks.push(bookData());
 }
 
-module.exports = { bookData, arrayOfBooks };
+const authorData = () => ({
+  author: faker.name.findName(),
+});
+
+const arrayOfAuthors = [];
+
+for (let i = 0; i < 3; i++) {
+  arrayOfAuthors.push(authorData());
+}
+module.exports = { bookData, arrayOfBooks, authorData, arrayOfAuthors };

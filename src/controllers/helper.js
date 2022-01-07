@@ -1,4 +1,4 @@
-const { Book, Reader } = require("../models");
+const { Book, Reader, Author } = require("../models");
 
 const getModel = (model) => {
   switch (model) {
@@ -7,6 +7,10 @@ const getModel = (model) => {
       break;
     case Reader:
       return "reader";
+      break;
+    case Author:
+      return "author";
+      break;
   }
 };
 
@@ -93,7 +97,6 @@ const updateItem = (model, res, id, newData) => {
     .update(newData, { where: { id: id } })
     .then(([item]) => {
       if (item) {
-        console.log(item);
         res.status(200).json(item);
       } else {
         const x = getModel(model);

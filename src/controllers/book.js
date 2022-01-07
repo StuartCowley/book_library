@@ -1,4 +1,3 @@
-const { get } = require("express/lib/response");
 const { Book } = require("../models");
 const {
   createItem,

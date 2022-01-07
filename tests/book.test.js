@@ -1,5 +1,5 @@
 const app = require("../src/app");
-const { exepect, expect } = require("chai");
+const { expect } = require("chai");
 const request = require("supertest");
 const { Book } = require("../src/models");
 const { beforeEach } = require("mocha");
