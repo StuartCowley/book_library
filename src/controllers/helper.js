@@ -10,11 +10,40 @@ const getModel = (model) => {
   }
 };
 
+const hidePassword = (data) => {
+  const password = data.password;
+  const split = password.split("");
+  const starredArray = split.map((char) => {
+    return "*";
+  });
+  const starred = starredArray.join("");
+
+  data.password = starred;
+  return data;
+};
+
+const removePassword = (item) => {
+  delete item.password;
+  return item;
+};
+
+const removePasswords = (items) => {
+  const modifiedItems = items.map((item) => {
+    return removePassword(item.dataValues);
+  });
+  return modifiedItems;
+};
+
 const createItem = (model, input, res) => {
   model
     .create(input)
     .then((item) => {
-      return res.status(201).json(item);
+      if (model === Reader) {
+        const modifiedItem = hidePassword(item.dataValues);
+        return res.status(201).json(modifiedItem);
+      } else {
+        return res.status(201).json(item);
+      }
     })
     .catch((err) => {
       const message = err.message;
@@ -25,8 +54,13 @@ const createItem = (model, input, res) => {
 const getAll = (model, res) => {
   model
     .findAll()
-    .then((item) => {
-      res.status(200).json(item);
+    .then((items) => {
+      if (model === Reader) {
+        const modifiedItems = removePasswords(items);
+        res.status(200).json(modifiedItems);
+      } else {
+        res.status(200).json(items);
+      }
     })
     .catch((err) => {
       res.status(404).send(err);
@@ -38,7 +72,12 @@ const getById = (model, res, id) => {
     .findByPk(id)
     .then((item) => {
       if (item) {
-        res.status(200).json(item);
+        if (model === Reader) {
+          const modifiedItem = removePassword(item.dataValues);
+          res.status(200).json(modifiedItem);
+        } else {
+          res.status(200).json(item);
+        }
       } else {
         const x = getModel(model);
         res.status(404).json({ error: `The ${x} could not be found.` });
@@ -54,6 +93,7 @@ const updateItem = (model, res, id, newData) => {
     .update(newData, { where: { id: id } })
     .then(([item]) => {
       if (item) {
+        console.log(item);
         res.status(200).json(item);
       } else {
         const x = getModel(model);
@@ -81,4 +121,13 @@ const deleteItem = (model, res, id) => {
     });
 };
 
-module.exports = { createItem, getAll, getById, updateItem, deleteItem };
+module.exports = {
+  createItem,
+  getAll,
+  getById,
+  updateItem,
+  deleteItem,
+  hidePassword,
+  removePassword,
+  removePasswords,
+};

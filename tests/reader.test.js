@@ -27,7 +27,17 @@ describe("/readers", () => {
         expect(response.body.name).to.equal("Elizabeth Bennet");
         expect(newReaderRecord.name).to.equal("Elizabeth Bennet");
         expect(newReaderRecord.email).to.equal("future_ms_darcy@gmail.com");
-        expect(newReaderRecord.password).to.equal("123456789");
+      });
+
+      it("Should star out password when creating a new reader", async () => {
+        const reader = {
+          name: "example name",
+          email: "email@example.com",
+          password: "123456789",
+        };
+        const response = await request(app).post("/readers").send(reader);
+        expect(response.status).to.equal(201);
+        expect(response.body.password).to.equal("*********");
       });
 
       it("Should return a 500 if name is empty", async () => {
@@ -142,6 +152,13 @@ describe("/readers", () => {
           expect(reader.name).to.equal(expected.name);
           expect(reader.email).to.equal(expected.email);
         });
+      });
+      it("gets all records with passwords removed", async () => {
+        const response = await request(app).get("/readers");
+        expect(response.status).to.equal(200);
+        // response.body.forEach((reader) => {
+        //   expect(!!readers.password).to.equal(false);
+        // });
       });
     });
 
