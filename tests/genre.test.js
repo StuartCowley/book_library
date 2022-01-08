@@ -114,6 +114,7 @@ describe("/genres", () => {
             .send(newGenreData);
 
           expect(result.status).to.equal(200);
+
           const updatedGenre = await Genre.findByPk(id);
           expect(updatedGenre.dataValues.genre).to.equal(newGenreData.genre);
         });

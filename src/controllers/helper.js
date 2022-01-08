@@ -41,6 +41,17 @@ const removePasswords = (items) => {
   return modifiedItems;
 };
 
+const getIncludedModel = (model) => {
+  switch (model) {
+    case Book:
+      return [Genre];
+      break;
+    case Genre:
+      return Book;
+      break;
+  }
+};
+
 const createItem = (model, input, res) => {
   model
     .create(input)
@@ -60,7 +71,7 @@ const createItem = (model, input, res) => {
 
 const getAll = (model, res) => {
   model
-    .findAll()
+    .findAll({ include: getIncludedModel(model) })
     .then((items) => {
       if (model === Reader) {
         const modifiedItems = removePasswords(items);
@@ -76,7 +87,7 @@ const getAll = (model, res) => {
 
 const getById = (model, res, id) => {
   model
-    .findByPk(id)
+    .findByPk(id, { include: getIncludedModel(model) })
     .then((item) => {
       if (item) {
         if (model === Reader) {

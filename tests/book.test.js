@@ -1,22 +1,31 @@
 const app = require("../src/app");
 const { expect } = require("chai");
 const request = require("supertest");
-const { Book } = require("../src/models");
+const { Book, Genre } = require("../src/models");
 const { beforeEach } = require("mocha");
 const faker = require("faker");
 const testHelpers = require("./testHelpers");
 
 describe("/books", () => {
+  let testGenre;
   before(async () => Book.sequelize.sync());
 
   beforeEach(async () => {
     await Book.destroy({ where: {} });
+    await Genre.destroy({ where: {} });
+    testGenre = await Genre.create({ genre: "horror" });
   });
 
   describe("with no records in the database", () => {
     describe("POST /books", () => {
       it("Should create a new book in the database", async () => {
-        const bookData = testHelpers.bookData();
+        const bookData = {
+          title: "test-book",
+          author: "test author",
+          GenreId: `${testGenre.id}`,
+          ISBN: "789768769",
+        };
+
         const response = await request(app).post("/books").send(bookData);
 
         expect(response.status).to.equal(201);
@@ -32,9 +41,9 @@ describe("/books", () => {
       it("Should return 500 if title is empty", async () => {
         const bookData = {
           title: "",
-          author: "Bob",
-          genre: "Horror",
-          ISBN: "89079707700970cvej",
+          author: "test author",
+          GenreId: `${testGenre.id}`,
+          ISBN: "789768769",
         };
 
         const result = await request(app).post("/books").send(bookData);
@@ -46,9 +55,9 @@ describe("/books", () => {
 
       it("Should return 500 if title is null", async () => {
         const bookData = {
-          author: "Bob",
-          genre: "Horror",
-          ISBN: "89079707700970cvej",
+          author: "test author",
+          GenreId: `${testGenre.id}`,
+          ISBN: "789768769",
         };
 
         const result = await request(app).post("/books").send(bookData);
@@ -59,10 +68,10 @@ describe("/books", () => {
       });
       it("Should return 500 if author is empty", async () => {
         const bookData = {
-          title: "A new book",
+          title: "test-book",
           author: "",
-          genre: "Horror",
-          ISBN: "89079707700970cvej",
+          GenreId: `${testGenre.id}`,
+          ISBN: "789768769",
         };
 
         const result = await request(app).post("/books").send(bookData);
@@ -74,9 +83,9 @@ describe("/books", () => {
 
       it("Should return 500 if author is null", async () => {
         const bookData = {
-          title: "A new book",
-          genre: "Horror",
-          ISBN: "89079707700970cvej",
+          title: "test-book",
+          GenreId: `${testGenre.id}`,
+          ISBN: "789768769",
         };
 
         const result = await request(app).post("/books").send(bookData);
@@ -91,9 +100,24 @@ describe("/books", () => {
 
       beforeEach(async () => {
         books = await Promise.all([
-          Book.create(testHelpers.arrayOfBooks[0]),
-          Book.create(testHelpers.arrayOfBooks[1]),
-          Book.create(testHelpers.arrayOfBooks[2]),
+          Book.create({
+            title: faker.random.words(),
+            author: faker.name.findName(),
+            GenreId: testGenre.id,
+            ISBN: faker.datatype.string(),
+          }),
+          Book.create({
+            title: faker.random.words(),
+            author: faker.name.findName(),
+            GenreId: testGenre.id,
+            ISBN: faker.datatype.string(),
+          }),
+          Book.create({
+            title: faker.random.words(),
+            author: faker.name.findName(),
+            GenreId: testGenre.id,
+            ISBN: faker.datatype.string(),
+          }),
         ]);
       });
 
@@ -135,7 +159,9 @@ describe("/books", () => {
 
       describe("PATCH /books/:id", () => {
         it("should update book with the given id", async () => {
-          const newBookData = testHelpers.bookData();
+          const newBookData = {
+            title: faker.random.words(),
+          };
           const book = books[0].dataValues;
           const id = books[0].dataValues.id;
           const result = await request(app)
