@@ -1,4 +1,4 @@
-const { Book, Reader, Author } = require("../models");
+const { Book, Reader, Author, Genre } = require("../models");
 
 const getModel = (model) => {
   switch (model) {
@@ -10,6 +10,9 @@ const getModel = (model) => {
       break;
     case Author:
       return "author";
+      break;
+    case Genre:
+      return "genre";
       break;
   }
 };

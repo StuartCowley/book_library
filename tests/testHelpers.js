@@ -22,4 +22,23 @@ const arrayOfAuthors = [];
 for (let i = 0; i < 3; i++) {
   arrayOfAuthors.push(authorData());
 }
-module.exports = { bookData, arrayOfBooks, authorData, arrayOfAuthors };
+
+const genreData = () => ({
+  genre: faker.hacker.adjective(),
+});
+
+const arrayOfGenres = [];
+
+for (let i = 0; i < 3; i++) {
+  arrayOfGenres.push(genreData());
+}
+
+console.log(arrayOfGenres);
+module.exports = {
+  bookData,
+  arrayOfBooks,
+  authorData,
+  arrayOfAuthors,
+  genreData,
+  arrayOfGenres,
+};

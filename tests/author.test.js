@@ -60,7 +60,13 @@ describe("/authors", () => {
           Author.create(testHelpers.arrayOfAuthors[2]),
         ]);
       });
-
+      describe("POST /authors", () => {
+        it("Should return 500 if author is ready in the database", async () => {
+          const authorData = authors[0].dataValues;
+          const result = await request(app).post("/authors").send(authorData);
+          expect(result.status).to.equal(500);
+        });
+      });
       describe("GET /authors", () => {
         it("gets all author records", async () => {
           const response = await request(app).get("/authors");
