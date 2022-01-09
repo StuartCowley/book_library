@@ -13,19 +13,6 @@ module.exports = (connection, DataTypes) => {
         },
       },
     },
-    author: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          args: [true],
-          msg: "Author can not be empty",
-        },
-        notNull: {
-          msg: "Author can not be empty",
-        },
-      },
-    },
     ISBN: {
       type: DataTypes.STRING,
     },

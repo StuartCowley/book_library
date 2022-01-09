@@ -44,11 +44,13 @@ const removePasswords = (items) => {
 const getIncludedModel = (model) => {
   switch (model) {
     case Book:
-      return [Genre];
+      return [Genre, Author];
       break;
     case Genre:
       return Book;
       break;
+    case Author:
+      return Book;
   }
 };
 

@@ -57,7 +57,6 @@ describe("/genres", () => {
         genres = await Promise.all([
           Genre.create(testHelpers.arrayOfGenres[0]),
           Genre.create(testHelpers.arrayOfGenres[1]),
-          Genre.create(testHelpers.arrayOfGenres[2]),
         ]);
       });
       describe("POST /genres", () => {
@@ -73,7 +72,7 @@ describe("/genres", () => {
           const response = await request(app).get("/genres");
 
           expect(response.status).to.equal(200);
-          expect(response.body.length).to.equal(3);
+          expect(response.body.length).to.equal(2);
 
           const returnedGenres = response.body;
 
@@ -107,7 +106,6 @@ describe("/genres", () => {
       describe("PATCH /genres/:id", () => {
         it("should update genre with the given id", async () => {
           const newGenreData = testHelpers.genreData();
-          const genre = genres[0].dataValues;
           const id = genres[0].dataValues.id;
           const result = await request(app)
             .patch(`/genres/${id}`)

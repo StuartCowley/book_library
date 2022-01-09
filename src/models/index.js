@@ -22,6 +22,22 @@ const setupDatabase = () => {
   Reader.hasMany(Book);
   Genre.hasMany(Book);
   Book.belongsTo(Genre);
+  Author.hasMany(Book, {
+    foreignKey: {
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          args: [true],
+          msg: "Author can not be empty",
+        },
+        notNull: {
+          msg: "Author can not be empty",
+        },
+      },
+    },
+  });
+
+  Book.belongsTo(Author);
 
   connection.sync({ alter: true });
 

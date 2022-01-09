@@ -1,19 +1,22 @@
 const app = require("../src/app");
 const { expect } = require("chai");
 const request = require("supertest");
-const { Book, Genre } = require("../src/models");
+const { Book, Genre, Author } = require("../src/models");
 const { beforeEach } = require("mocha");
 const faker = require("faker");
 const testHelpers = require("./testHelpers");
 
 describe("/books", () => {
   let testGenre;
+  let testAuthor;
   before(async () => Book.sequelize.sync());
 
   beforeEach(async () => {
     await Book.destroy({ where: {} });
     await Genre.destroy({ where: {} });
+    await Author.destroy({ where: {} });
     testGenre = await Genre.create({ genre: "horror" });
+    testAuthor = await Author.create({ author: "Test Author" });
   });
 
   describe("with no records in the database", () => {
@@ -21,7 +24,7 @@ describe("/books", () => {
       it("Should create a new book in the database", async () => {
         const bookData = {
           title: "test-book",
-          author: "test author",
+          AuthorId: `${testAuthor.id}`,
           GenreId: `${testGenre.id}`,
           ISBN: "789768769",
         };
@@ -41,7 +44,7 @@ describe("/books", () => {
       it("Should return 500 if title is empty", async () => {
         const bookData = {
           title: "",
-          author: "test author",
+          AuthorId: `${testAuthor.id}`,
           GenreId: `${testGenre.id}`,
           ISBN: "789768769",
         };
@@ -55,7 +58,8 @@ describe("/books", () => {
 
       it("Should return 500 if title is null", async () => {
         const bookData = {
-          author: "test author",
+          author: `${testAuthor.id}`,
+          AuthorId: `${testAuthor.id}`,
           GenreId: `${testGenre.id}`,
           ISBN: "789768769",
         };
@@ -69,7 +73,7 @@ describe("/books", () => {
       it("Should return 500 if author is empty", async () => {
         const bookData = {
           title: "test-book",
-          author: "",
+          AuthorId: "",
           GenreId: `${testGenre.id}`,
           ISBN: "789768769",
         };
@@ -102,19 +106,19 @@ describe("/books", () => {
         books = await Promise.all([
           Book.create({
             title: faker.random.words(),
-            author: faker.name.findName(),
+            AuthorId: testAuthor.id,
             GenreId: testGenre.id,
             ISBN: faker.datatype.string(),
           }),
           Book.create({
             title: faker.random.words(),
-            author: faker.name.findName(),
+            AuthorId: testAuthor.id,
             GenreId: testGenre.id,
             ISBN: faker.datatype.string(),
           }),
           Book.create({
             title: faker.random.words(),
-            author: faker.name.findName(),
+            AuthorId: testAuthor.id,
             GenreId: testGenre.id,
             ISBN: faker.datatype.string(),
           }),
@@ -174,7 +178,9 @@ describe("/books", () => {
         });
 
         it("Should return a 404 when trying to update a book that does not exist", async () => {
-          const newBookData = testHelpers.bookData();
+          const newBookData = {
+            title: faker.random.words(),
+          };
           const result = await request(app)
             .patch("/books/99999999999999")
             .send(newBookData);

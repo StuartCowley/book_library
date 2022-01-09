@@ -2,7 +2,7 @@ const faker = require("faker");
 
 const bookData = () => ({
   title: faker.random.words(),
-  author: faker.name.findName(),
+  AuthorId: 1,
   GenreId: 1,
   ISBN: faker.datatype.string(),
 });
