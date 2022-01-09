@@ -4,7 +4,6 @@ const request = require("supertest");
 const { Genre } = require("../src/models");
 const { beforeEach } = require("mocha");
 const faker = require("faker");
-const testHelpers = require("./testHelpers");
 
 describe("/genres", () => {
   before(async () => Genre.sequelize.sync());
@@ -16,7 +15,9 @@ describe("/genres", () => {
   describe("with no records in the database", () => {
     describe("POST /genres", () => {
       it("Should create a new genre in the database", async () => {
-        const genreData = testHelpers.genreData();
+        const genreData = {
+          genre: faker.hacker.adjective(),
+        };
         const response = await request(app).post("/genres").send(genreData);
 
         expect(response.status).to.equal(201);
@@ -55,8 +56,12 @@ describe("/genres", () => {
 
       beforeEach(async () => {
         genres = await Promise.all([
-          Genre.create(testHelpers.arrayOfGenres[0]),
-          Genre.create(testHelpers.arrayOfGenres[1]),
+          Genre.create({
+            genre: faker.hacker.adjective(),
+          }),
+          Genre.create({
+            genre: faker.hacker.adjective(),
+          }),
         ]);
       });
       describe("POST /genres", () => {
@@ -105,7 +110,9 @@ describe("/genres", () => {
 
       describe("PATCH /genres/:id", () => {
         it("should update genre with the given id", async () => {
-          const newGenreData = testHelpers.genreData();
+          const newGenreData = {
+            genre: faker.hacker.adjective(),
+          };
           const id = genres[0].dataValues.id;
           const result = await request(app)
             .patch(`/genres/${id}`)
@@ -118,7 +125,9 @@ describe("/genres", () => {
         });
 
         it("Should return a 404 when trying to update a genre that does not exist", async () => {
-          const newGenreData = testHelpers.genreData();
+          const newGenreData = {
+            genre: faker.hacker.adjective(),
+          };
           const result = await request(app)
             .patch("/genres/99999999999999")
             .send(newGenreData);

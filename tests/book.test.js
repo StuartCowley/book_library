@@ -4,7 +4,6 @@ const request = require("supertest");
 const { Book, Genre, Author } = require("../src/models");
 const { beforeEach } = require("mocha");
 const faker = require("faker");
-const testHelpers = require("./testHelpers");
 
 describe("/books", () => {
   let testGenre;
@@ -15,18 +14,18 @@ describe("/books", () => {
     await Book.destroy({ where: {} });
     await Genre.destroy({ where: {} });
     await Author.destroy({ where: {} });
-    testGenre = await Genre.create({ genre: "horror" });
-    testAuthor = await Author.create({ author: "Test Author" });
+    testGenre = await Genre.create({ genre: faker.hacker.adjective() });
+    testAuthor = await Author.create({ author: faker.name.findName() });
   });
 
   describe("with no records in the database", () => {
     describe("POST /books", () => {
       it("Should create a new book in the database", async () => {
         const bookData = {
-          title: "test-book",
-          AuthorId: `${testAuthor.id}`,
-          GenreId: `${testGenre.id}`,
-          ISBN: "789768769",
+          title: faker.random.words(),
+          AuthorId: testAuthor.id,
+          GenreId: testGenre.id,
+          ISBN: faker.datatype.string(),
         };
 
         const response = await request(app).post("/books").send(bookData);
@@ -38,7 +37,6 @@ describe("/books", () => {
         });
 
         expect(newBookRecord.title).to.equal(bookData.title);
-        expect(newBookRecord.author).to.equal(bookData.author);
       });
 
       it("Should return 500 if title is empty", async () => {
@@ -58,10 +56,9 @@ describe("/books", () => {
 
       it("Should return 500 if title is null", async () => {
         const bookData = {
-          author: `${testAuthor.id}`,
-          AuthorId: `${testAuthor.id}`,
-          GenreId: `${testGenre.id}`,
-          ISBN: "789768769",
+          AuthorId: testAuthor.id,
+          GenreId: testGenre.id,
+          ISBN: faker.datatype.string(),
         };
 
         const result = await request(app).post("/books").send(bookData);
@@ -72,10 +69,10 @@ describe("/books", () => {
       });
       it("Should return 500 if author is empty", async () => {
         const bookData = {
-          title: "test-book",
+          title: faker.random.words(),
           AuthorId: "",
-          GenreId: `${testGenre.id}`,
-          ISBN: "789768769",
+          GenreId: testGenre.id,
+          ISBN: faker.datatype.string(),
         };
 
         const result = await request(app).post("/books").send(bookData);
@@ -87,9 +84,9 @@ describe("/books", () => {
 
       it("Should return 500 if author is null", async () => {
         const bookData = {
-          title: "test-book",
-          GenreId: `${testGenre.id}`,
-          ISBN: "789768769",
+          title: faker.random.words(),
+          GenreId: testGenre.id,
+          ISBN: faker.datatype.string(),
         };
 
         const result = await request(app).post("/books").send(bookData);

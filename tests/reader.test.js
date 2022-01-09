@@ -1,8 +1,8 @@
-// tests/reader.test.js
 const { expect } = require("chai");
 const request = require("supertest");
 const { Reader } = require("../src/models");
 const app = require("../src/app");
+const faker = require("faker");
 
 describe("/readers", () => {
   before(async () => Reader.sequelize.sync());
@@ -31,8 +31,8 @@ describe("/readers", () => {
 
       it("Should star out password when creating a new reader", async () => {
         const reader = {
-          name: "example name",
-          email: "email@example.com",
+          name: faker.name.firstName(),
+          email: faker.internet.email(),
           password: "123456789",
         };
         const response = await request(app).post("/readers").send(reader);
@@ -43,7 +43,7 @@ describe("/readers", () => {
       it("Should return a 500 if name is empty", async () => {
         const readerData = {
           name: "",
-          email: "hello@hello.com",
+          email: faker.internet.email(),
           password: "12345567890abc",
         };
 
@@ -55,7 +55,7 @@ describe("/readers", () => {
       });
       it("Should return a 500 if name is null", async () => {
         const readerData = {
-          email: "hello@hello.com",
+          email: faker.internet.email(),
           password: "12345567890abc",
         };
 
@@ -68,7 +68,7 @@ describe("/readers", () => {
 
       it("Should return a 500 if email is in an incorrect format", async () => {
         const readerData = {
-          name: "Bob Smith",
+          name: faker.name.firstName(),
           email: "helloathello.com",
           password: "12345567890abc",
         };
@@ -80,7 +80,7 @@ describe("/readers", () => {
       });
       it("Should return a 500 if email is null", async () => {
         const readerData = {
-          name: "Bob Smith",
+          name: faker.name.firstName(),
           password: "12345567890abc",
         };
         const result = await request(app).post("/readers").send(readerData);
@@ -92,8 +92,8 @@ describe("/readers", () => {
 
       it("Should return a 500 if password is less than 8 characters long", async () => {
         const readerData = {
-          name: "Bob Smith",
-          email: "hello@hello.com",
+          name: faker.name.firstName(),
+          email: faker.internet.email(),
           password: "12",
         };
         const result = await request(app).post("/readers").send(readerData);
@@ -104,8 +104,8 @@ describe("/readers", () => {
       });
       it("Should return a 500 if password is null", async () => {
         const readerData = {
-          name: "Bob Smith",
-          email: "hello@hello.com",
+          name: faker.name.firstName(),
+          email: faker.internet.email(),
         };
         const result = await request(app).post("/readers").send(readerData);
         expect(result.status).to.equal(500);
@@ -122,18 +122,18 @@ describe("/readers", () => {
     beforeEach(async () => {
       readers = await Promise.all([
         Reader.create({
-          name: "Elizabeth Bennet",
-          email: "future_ms_darcy@gmail.com",
+          name: faker.name.firstName(),
+          email: faker.internet.email(),
           password: "123456789",
         }),
         Reader.create({
-          name: "Arya Stark",
-          email: "vmorgul@me.com",
+          name: faker.name.firstName(),
+          email: faker.internet.email(),
           password: "123456789",
         }),
         Reader.create({
-          name: "Lyra Belacqua",
-          email: "darknorth123@msn.org",
+          name: faker.name.firstName(),
+          email: faker.internet.email(),
           password: "123456789",
         }),
       ]);
@@ -156,9 +156,9 @@ describe("/readers", () => {
       it("gets all records with passwords removed", async () => {
         const response = await request(app).get("/readers");
         expect(response.status).to.equal(200);
-        // response.body.forEach((reader) => {
-        //   expect(!!readers.password).to.equal(false);
-        // });
+        response.body.forEach((reader) => {
+          expect(!!reader.password).to.equal(false);
+        });
       });
     });
 
@@ -197,7 +197,7 @@ describe("/readers", () => {
       it("returns a 404 if the reader does not exist", async () => {
         const response = await request(app)
           .patch("/readers/12345")
-          .send({ email: "some_new_email@gmail.com" });
+          .send({ email: faker.internet.email() });
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal("The reader could not be found.");

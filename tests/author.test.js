@@ -4,7 +4,6 @@ const request = require("supertest");
 const { Author } = require("../src/models");
 const { beforeEach } = require("mocha");
 const faker = require("faker");
-const testHelpers = require("./testHelpers");
 
 describe("/authors", () => {
   before(async () => Author.sequelize.sync());
@@ -16,7 +15,9 @@ describe("/authors", () => {
   describe("with no records in the database", () => {
     describe("POST /authors", () => {
       it("Should create a new author in the database", async () => {
-        const authorData = testHelpers.authorData();
+        const authorData = {
+          author: faker.name.findName(),
+        };
         const response = await request(app).post("/authors").send(authorData);
 
         expect(response.status).to.equal(201);
@@ -55,9 +56,15 @@ describe("/authors", () => {
 
       beforeEach(async () => {
         authors = await Promise.all([
-          Author.create(testHelpers.arrayOfAuthors[0]),
-          Author.create(testHelpers.arrayOfAuthors[1]),
-          Author.create(testHelpers.arrayOfAuthors[2]),
+          Author.create({
+            author: faker.name.findName(),
+          }),
+          Author.create({
+            author: faker.name.findName(),
+          }),
+          Author.create({
+            author: faker.name.findName(),
+          }),
         ]);
       });
       describe("POST /authors", () => {
@@ -105,8 +112,9 @@ describe("/authors", () => {
 
       describe("PATCH /authors/:id", () => {
         it("should update author with the given id", async () => {
-          const newAuthorData = testHelpers.authorData();
-          const author = authors[0].dataValues;
+          const newAuthorData = {
+            author: faker.name.findName(),
+          };
           const id = authors[0].dataValues.id;
           const result = await request(app)
             .patch(`/authors/${id}`)
@@ -120,7 +128,9 @@ describe("/authors", () => {
         });
 
         it("Should return a 404 when trying to update an author that does not exist", async () => {
-          const newAuthorData = testHelpers.authorData();
+          const newAuthorData = {
+            author: faker.name.findName(),
+          };
           const result = await request(app)
             .patch("/authors/99999999999999")
             .send(newAuthorData);
