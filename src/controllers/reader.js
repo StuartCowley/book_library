@@ -7,30 +7,30 @@ const {
   deleteItem,
 } = require("./helper");
 
-const CreateReader = (req, res) => {
+const createReader = (req, res) => {
   createItem(Reader, req.body, res);
 };
 
-const GetReaders = (req, res) => {
+const getReaders = (req, res) => {
   getAll(Reader, res);
 };
 
-const GetReaderById = (req, res) => {
+const getReaderById = (req, res) => {
   getById(Reader, res, req.params.id);
 };
 
-const UpdateReader = (req, res) => {
+const updateReader = (req, res) => {
   updateItem(Reader, res, req.params.id, req.body);
 };
 
-const DeleteReader = (req, res) => {
+const deleteReader = (req, res) => {
   deleteItem(Reader, res, req.params.id);
 };
 
 module.exports = {
-  CreateReader,
-  GetReaders,
-  GetReaderById,
-  UpdateReader,
-  DeleteReader,
+  createReader,
+  getReaders,
+  getReaderById,
+  updateReader,
+  deleteReader,
 };

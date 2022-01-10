@@ -8,11 +8,11 @@ const {
 } = require("../controllers/genre");
 
 const genreRouter = express.Router();
-
-genreRouter.post("/genres", createGenre);
-genreRouter.get("/genres", getGenres);
-genreRouter.get("/genres/:id", getGenreById);
-genreRouter.patch("/genres/:id", updateGenre);
-genreRouter.delete("/genres/:id", deleteGenre);
+genreRouter.route("/genres").post(createGenre).get(getGenres);
+genreRouter
+  .route("/genres/:id")
+  .get(getGenreById)
+  .patch(updateGenre)
+  .delete(deleteGenre);
 
 module.exports = genreRouter;

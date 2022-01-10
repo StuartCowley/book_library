@@ -1,18 +1,18 @@
 const express = require("express");
 const {
-  CreateReader,
-  GetReaders,
-  GetReaderById,
-  UpdateReader,
-  DeleteReader,
+  createReader,
+  getReaders,
+  getReaderById,
+  updateReader,
+  deleteReader,
 } = require("../controllers/reader");
 
 const readerRouter = express.Router();
-
-readerRouter.post("/readers", CreateReader);
-readerRouter.get("/readers", GetReaders);
-readerRouter.get("/readers/:id", GetReaderById);
-readerRouter.patch("/readers/:id", UpdateReader);
-readerRouter.delete("/readers/:id", DeleteReader);
+readerRouter.route("/readers").post(createReader).get(getReaders);
+readerRouter
+  .route("/readers/:id")
+  .get(getReaderById)
+  .patch(updateReader)
+  .delete(deleteReader);
 
 module.exports = readerRouter;

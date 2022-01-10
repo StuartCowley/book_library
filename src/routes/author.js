@@ -9,10 +9,12 @@ const {
 
 const authorRouter = express.Router();
 
-authorRouter.post("/authors", createAuthor);
-authorRouter.get("/authors", getAuthors);
-authorRouter.get("/authors/:id", getAuthorById);
-authorRouter.patch("/authors/:id", updateAuthor);
-authorRouter.delete("/authors/:id", deleteAuthor);
+authorRouter.route("/authors").post(createAuthor).get(getAuthors);
+
+authorRouter
+  .route("/authors/:id")
+  .get(getAuthorById)
+  .patch(updateAuthor)
+  .delete(deleteAuthor);
 
 module.exports = authorRouter;
