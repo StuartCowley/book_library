@@ -6,7 +6,7 @@ The Book Library API project as part of the Manchester Codes curriculum (back-en
 
 Built using Node, Express, MySQL, Sequelize.
 
-Mocha, Chai Supertest and Faker(for mocking) were used for testing which was used throughout the project.
+Mocha, Chai, Supertest and Faker(for mocking) were used for testing which was used throughout the project.
 
 ## Installation
 
